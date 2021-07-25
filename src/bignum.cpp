@@ -1,4 +1,4 @@
-#include "bignum.h"
+#include "bignum.hpp"
 
 bool bignum::getSignal() const
 {
@@ -71,6 +71,11 @@ std::string bignum::getString() const
 	return number;
 }
 
+const char& bignum::operator[](size_t index) const
+{
+	return number[index];
+}
+
 void bignum::plusplus()
 {
 	std::stringstream sstream;
@@ -81,7 +86,7 @@ void bignum::plusplus()
 		{
 			if (i > 0 && up == 0)
 			{
-				number = number.substr(0, i + 1) + big_invert(sstream.str());
+				number = number.substr(0, i + 1) + invert(sstream.str());
 				return;
 			}
 
@@ -116,7 +121,7 @@ void bignum::plusplus()
 		{
 			if (i > 0 && up == 0)
 			{
-				number = number.substr(0, i + 1) + big_invert(sstream.str());
+				number = number.substr(0, i + 1) + invert(sstream.str());
 				return;
 			}
 			n = (number[i] - '0') - up;
@@ -143,7 +148,7 @@ void bignum::plusplus()
 			}
 		}
 	}
-	number = big_invert(sstream.str());
+	number = invert(sstream.str());
 }
 
 void bignum::minusminus()
@@ -156,7 +161,7 @@ void bignum::minusminus()
 		{
 			if (i > 0 && up == 0)
 			{
-				number = number.substr(0, i + 1) + big_invert(sstream.str());
+				number = number.substr(0, i + 1) + invert(sstream.str());
 				return;
 			}
 
@@ -197,7 +202,7 @@ void bignum::minusminus()
 		{
 			if (i > 0 && up == 0)
 			{
-				number = number.substr(0, i + 1) + big_invert(sstream.str());
+				number = number.substr(0, i + 1) + invert(sstream.str());
 				return;
 			}
 
@@ -225,10 +230,10 @@ void bignum::minusminus()
 			}
 		}
 	}
-	number = big_invert(sstream.str());
+	number = invert(sstream.str());
 }
 
-bool bignum::operator==(const bignum&      num) const
+bool bignum::equ(const bignum& num) const
 {
 	std::string this_string = this->getNumber(), num_string = num.getNumber();
 	ssize_t this_lenght = this->getNumber().length(), num_lenght = num.getNumber().length();
@@ -249,33 +254,13 @@ bool bignum::operator==(const bignum&      num) const
 		return true;
 	}
 }
-bool bignum::operator==(const std::string& num) const
-{
-	bignum num1(num);
-	return *this == num1;
-}
-bool bignum::operator==(const ssize_t&     num) const
-{
-	bignum num1(num);
-	return *this == num1;
-}
 
-bool bignum::operator!=(const bignum&      num) const
+bool bignum::neq(const bignum& num) const
 {
-	return !(*this == num);
-}
-bool bignum::operator!=(const std::string& num) const
-{
-	bignum num1(num);
-	return !(*this == num);
-}
-bool bignum::operator!=(const ssize_t&     num) const
-{
-	bignum num1(num);
 	return !(*this == num);
 }
 
-bool bignum::operator< (const bignum&      num) const
+bool bignum::lss(const bignum& num) const
 {
 	std::string this_string = this->getNumber(), num_string = num.getNumber();
 	ssize_t this_lenght = this->getNumber().length(), num_lenght = num.getNumber().length();
@@ -337,18 +322,8 @@ bool bignum::operator< (const bignum&      num) const
 
 	return false;
 }
-bool bignum::operator< (const std::string& num) const
-{
-	bignum num1(num);
-	return *this < num1;
-}
-bool bignum::operator< (const ssize_t&     num) const
-{
-	bignum num1(num);
-	return *this < num1;
-}
 
-bool bignum::operator> (const bignum&      num) const
+bool bignum::gtr(const bignum& num) const
 {
 	std::string this_string = this->getNumber(), num_string = num.getNumber();
 	ssize_t this_lenght = this->getNumber().length(), num_lenght = num.getNumber().length();
@@ -410,18 +385,8 @@ bool bignum::operator> (const bignum&      num) const
 
 	return false;
 }
-bool bignum::operator> (const std::string& num) const
-{
-	bignum num1(num);
-	return *this > num1;
-}
-bool bignum::operator> (const ssize_t&     num) const
-{
-	bignum num1(num);
-	return *this > num1;
-}
 
-bool bignum::operator<=(const bignum&      num) const
+bool bignum::leq(const bignum& num) const
 {
 	if (*this < num || *this == num)
 	{
@@ -429,46 +394,11 @@ bool bignum::operator<=(const bignum&      num) const
 	}
 	return false;
 }
-bool bignum::operator<=(const std::string& num) const
-{
-	bignum num1(num);
-	if (*this < num1 || *this == num1)
-	{
-		return true;
-	}
-	return false;
-}
-bool bignum::operator<=(const ssize_t&     num) const
-{
-	bignum num1(num);
-	if (*this < num1 || *this == num1)
-	{
-		return true;
-	}
-	return false;
-}
 
-bool bignum::operator>=(const bignum&      num) const
+
+bool bignum::geq(const bignum& num) const
 {
 	if (*this > num || *this == num)
-	{
-		return true;
-	}
-	return false;
-}
-bool bignum::operator>=(const std::string& num) const
-{
-	bignum num1(num);
-	if (*this > num1 || *this == num1)
-	{
-		return true;
-	}
-	return false;
-}
-bool bignum::operator>=(const ssize_t&     num) const
-{
-	bignum num1(num);
-	if (*this < num1 || *this == num1)
 	{
 		return true;
 	}
@@ -540,7 +470,7 @@ bignum bignum::addition(bignum& num1, bignum& num2)
 		}
 		sstream << down;
 	}
-	bignum sum = big_invert(sstream.str());
+	bignum sum = invert(sstream.str());
 	return sum;
 }
 
@@ -571,7 +501,7 @@ bignum bignum::subtraction(bignum& num1, bignum& num2)
 
 	std::stringstream sstream;
 	ssize_t xp = num1.getNumber().length(), yp = num2.getNumber().length();
-	size_t b = bigger(xp, yp);
+	size_t b = std::max(xp, yp);
 	std::string num1_string = num1.getNumber(), num2_string = num2.getNumber();
 
 	if(yp < xp)
@@ -583,19 +513,19 @@ bignum bignum::subtraction(bignum& num1, bignum& num2)
 		num2_string = ss.str();
 	}
 	bignum sum, c;
-	c.forceNumber(big_complement(num2_string, b));
+	c.forceNumber(complement(num2_string, b));
 	sum = num1 + c;
 	if (sum.getNumber().length() > b)
 	{
 		++sum;
-		sum = big_formatter(sum.getNumber().substr(1));
+		sum = formatter(sum.getNumber().substr(1));
 		return sum;
 	}
 	else
 	{
-		sum = big_complement(sum.getNumber(), 0);
+		sum = complement(sum.getNumber(), 0);
 		sum.setSignal(true);
-		sum = big_formatter(sum.getString());
+		sum = formatter(sum.getString());
 		return sum;
 	}
 }
@@ -636,7 +566,7 @@ bignum bignum::multiplication(bignum& num1, bignum& num2)
 				up = total / 10;
 			}
 		}
-		vsum = vsum + big_invert(sstream.str());
+		vsum = vsum + invert(sstream.str());
 		operation++;
 	}
 	if (num1.getSignal() != num2.getSignal())
@@ -644,7 +574,7 @@ bignum bignum::multiplication(bignum& num1, bignum& num2)
 		if (vsum.getString() != "0")
 			vsum.setSignal(true);
 	}
-	vsum = big_formatter(vsum.getString());
+	vsum = formatter(vsum.getString());
 	return vsum;
 }
 
@@ -654,6 +584,7 @@ bignum bignum::division(bignum& num1, bignum& num2)
 	{
 		return 0;
 	}
+	
 	bool num1_signal = false, num2_signal = false;
 	if (num1.getSignal())
 	{
@@ -707,82 +638,86 @@ bignum bignum::division(bignum& num1, bignum& num2)
 	return total;
 }
 
+bignum bignum::modulo(bignum& num1, bignum& num2)
+{
+	if (num2 == 0)
+	{
+		return 0;
+	}
+	
+	bool num1_signal = false;
+	if (num1.getSignal())
+	{
+		num1_signal = true;
+		num1.setSignal(false);
+	}
+	num2.setSignal(false);
+
+	bignum numerator(num1), tmp, e(1);
+	while (1)
+	{
+		if (numerator <= 0)
+		{
+			break;
+		}
+
+		tmp = num2 * e;
+
+		if (numerator > tmp)
+		{
+			e = e * 10;
+			continue;
+		}
+		else
+		{
+			if (e > 1)
+			{
+				e = e / 10;
+				tmp = num2 * e;
+			}
+		}
+		if (numerator >= tmp)
+		{
+			numerator = numerator - tmp;
+		}
+		else
+		{
+			break;
+		}
+		e = 1;
+	}
+	if (num1_signal)
+	{
+		if (numerator.getString() != "0")
+			numerator.setSignal(true);
+	}
+	return numerator;
+}
+
 bignum& bignum::operator++()
 {
 	this->plusplus();
 	return *this;
+}
+bignum bignum::operator++(int)
+{
+	bignum num(*this);
+	this->plusplus();
+	return num;
 }
 bignum& bignum::operator--()
 {
 	this->minusminus();
 	return *this;
 }
-
-bignum& bignum::operator+=(const bignum&      num)
+bignum bignum::operator--(int)
 {
-	*this = *this + num;
-	return *this;
-}
-bignum& bignum::operator+=(const std::string& num)
-{
-	*this = *this + num;
-	return *this;
-}
-bignum& bignum::operator+=(const ssize_t&     num)
-{
-	*this = *this + num;
-	return *this;
+	bignum num(*this);
+	this->minusminus();
+	return num;
 }
 
-bignum& bignum::operator-=(const bignum&      num)
-{
-	*this = *this - num;
-	return *this;
-}
-bignum& bignum::operator-=(const std::string& num)
-{
-	*this = *this - num;
-	return *this;
-}
-bignum& bignum::operator-=(const ssize_t&     num)
-{
-	*this = *this + num;
-	return *this;
-}
-
-bignum& bignum::operator*=(const bignum&      num)
-{
-	*this = *this * num;
-	return *this;
-}
-bignum& bignum::operator*=(const std::string& num)
-{
-	*this = *this * num;
-	return *this;
-}
-bignum& bignum::operator*=(const ssize_t&     num)
-{
-	*this = *this + num;
-	return *this;
-}
-
-bignum& bignum::operator/=(const bignum&      num)
-{
-	*this = *this / num;
-	return *this;
-}
-bignum& bignum::operator/=(const std::string& num)
-{
-	*this = *this / num;
-	return *this;
-}
-bignum& bignum::operator/=(const ssize_t&     num)
-{
-	*this = *this + num;
-	return *this;
-}
-
-std::string big_complement(const std::string& num, const size_t& len)
+std::string bignum::complement(const std::string& num, const size_t& len)
 {
 	std::stringstream ss;
 	size_t nlen = num.length();
@@ -800,7 +735,7 @@ std::string big_complement(const std::string& num, const size_t& len)
 	return ss.str();
 }
 
-std::string big_invert(const std::string& _string)
+std::string bignum::invert(const std::string& _string)
 {
 	std::stringstream sstream;
 	short initial = 0;
@@ -816,7 +751,7 @@ std::string big_invert(const std::string& _string)
 	return sstream.str();
 }
 
-std::string big_formatter(const std::string& _string)
+std::string bignum::formatter(const std::string& _string)
 {
 	std::stringstream sstream;
 	short initial = 0;
@@ -852,7 +787,7 @@ std::string big_formatter(const std::string& _string)
 	return sstream.str();
 }
 
-std::string big_superscript(const std::string& num)
+std::string bignum::superscript(const std::string& num)
 {
 	std::stringstream sstream;
 	for (size_t i = 0; i < num.length(); i++)
@@ -908,13 +843,13 @@ std::string big_superscript(const std::string& num)
 	}
 	return sstream.str();
 }
-std::string big_superscript(const ssize_t&     num)
+std::string bignum::superscript(const ssize_t&     num)
 {
 	std::string number = std::to_string(num);
-	return big_superscript(number);
+	return superscript(number);
 }
 
-std::string big_subscribed(const std::string& num)
+std::string bignum::subscribed(const std::string& num)
 {
 	std::stringstream sstream;
 	for (size_t i = 0; i < num.length(); i++)
@@ -970,150 +905,79 @@ std::string big_subscribed(const std::string& num)
 	}
 	return sstream.str();
 }
-std::string big_subscribed(const ssize_t&     num)
+std::string bignum::subscribed(const ssize_t&     num)
 {
 	std::string number = std::to_string(num);
-	return big_subscribed(number);
+	return subscribed(number);
 }
 
-std::string big_scientific(const std::string& num, const ssize_t& precision)
+std::string bignum::scientific(const ssize_t& precision)
 {
 	if (precision < 0)
 	{
-		return num;
+		return this->getString();
 	}
 
 	std::stringstream sstream;
 	short initial = 0;
-	if (num[0] == '-')
+	if (this->signal)
 	{
-		initial = 1;
 		sstream << "-";
 	}
-	sstream << num[initial];
+	sstream << (*this)[initial];
 	if (precision > 0)
 	{
 		sstream << ",";
 	}
 	for (size_t i = initial + 1; i <= (size_t)precision; i++)
 	{
-		if (i >= num.length())
+		if (i >= this->length())
 		{
 			sstream << "0";
 		}
 		else
 		{
-			sstream << num[i];
+			sstream << (*this)[i];
 		}
 	}
-	sstream << "×10" << big_superscript(num.length() - initial - 1);
+	sstream << "×10" << superscript(this->length() - initial - 1);
 	return sstream.str();
 }
-std::string big_scientific(const bignum&      num, const ssize_t& precision)
-{
-	return big_scientific(num.getString(), precision);
-}
 
-std::string big_E(const std::string& num, const ssize_t& precision)
+std::string bignum::E(const ssize_t& precision)
 {
 	if (precision < 0)
 	{
-		return num;
+		return this->getString();
 	}
 
 	std::stringstream sstream;
 	short initial = 0;
-	if (num[0] == '-')
+	if (this->signal)
 	{
-		initial = 1;
 		sstream << "-";
 	}
-	sstream << num[initial];
+	sstream << (*this)[initial];
 	if (precision > 0)
 	{
 		sstream << ",";
 	}
 	for (size_t i = initial + 1; i <= (size_t)precision; i++)
 	{
-		if (i >= num.length())
+		if (i >= this->length())
 		{
 			sstream << "0";
 		}
 		else
 		{
-			sstream << num[i];
+			sstream << (*this)[i];
 		}
 	}
-	sstream << "E" << num.length() - initial - 1;
+	sstream << "E" << this->length() - initial - 1;
 	return sstream.str();
 }
-std::string big_E(const bignum&      num, const ssize_t& precision)
-{
-	return big_E(num.getString(), precision);
-}
 
-bignum big_pow(const bignum& num, const bignum&      e)
-{
-	if (e < "0")
-	{
-		return bignum(0);
-	}
-	if (e == "0")
-	{
-		return bignum(1);
-	}
-	bignum pow(num);
-	for (bignum i(1); i < e; i.plusplus())
-	{
-		pow = num * pow;
-	}
-	return pow;
-}
-bignum big_pow(const bignum& num, const std::string& e)
-{
-	bignum _e(e);
-	return big_pow(num, _e);
-}
-bignum big_pow(const bignum& num, const ssize_t&     e)
-{
-	if (e == 0)
-	{
-		return bignum(1);
-	}
-	bignum pow(num);
-	for (ssize_t i = 1; i < e; ++i)
-	{
-		pow = num * pow;
-	}
-	return pow;
-}
-
-bignum big_factorial(const bignum&      num)
-{
-	if (num <= "0")
-	{
-		return bignum(0);
-	}
-	bignum fact(1);
-	for (bignum i(num); i > "1"; i.minusminus())
-	{
-		fact = fact * i;
-	}
-	return fact.getString();
-}
-bignum big_factorial(const std::string& num)
-{
-	bignum _num(num);
-	return big_factorial(_num);
-}
-bignum big_factorial(const ssize_t&     num)
-{
-	bignum _num(num);
-	return big_factorial(_num);
-}
-
-
-void big_verificationInRange(const ssize_t& range)
+void bignum::test(const ssize_t& range)
 {
 	ssize_t procedimentos = 0, falhas = 0;
 	bignum ii, jj;
@@ -1121,8 +985,8 @@ void big_verificationInRange(const ssize_t& range)
 	{
 		for (ssize_t j = range * -1; j <= range; j++)
 		{
-			ii = i;
-			jj = j;
+			ii.setNumber(i);
+			jj.setNumber(j);
 			if (ii + jj != i + j)
 			{
 				std::cout << "resultado obtido: " << ii << " + " << jj << " = " << ii + jj << "\n";
@@ -1152,37 +1016,68 @@ void big_verificationInRange(const ssize_t& range)
 					std::cout << "\tesperado: " << i << " / " << j << " = " << i / j << "\n";
 					falhas++;
 				}
+				if (ii % jj != i % j)
+				{
+					std::cout << "resultado obtido: " << ii << " % " << jj << " = " << ii % jj << "\n";
+					std::cout << "\tesperado: " << i << " % " << j << " = " << i % j << "\n";
+					falhas++;
+				}
+				procedimentos += 2;
 			}
-			procedimentos += 4;
+			procedimentos += 3;
 		}
 			
 	}
-
+	
 	ii.setNumber(range * -1);
-	for (ssize_t i = range * -1; i <= range; i++)
+	for (ssize_t i = range * -1; i <= range;)
 	{
-		if (ii != i)
+		if (++ii != ++i)
 		{
 			std::cout << "resultado incorreto de ++" << i - 1 << " = " << ii.getString() << "\n";
 			std::cout << "esperado: " << i << "\n";
 			falhas++;
 			break;
 		}
-		++ii;
 		procedimentos++;
 	}
 
 	ii.setNumber(range);
-	for (ssize_t i = range; i >= range * -1; i--)
+	for (ssize_t i = range; i >= range * -1;)
 	{
-		if (ii != i)
+		if (--ii != --i)
 		{
 			std::cout << "resultado incorreto de --" << i + 1 << " = " << ii.getString() << "\n";
 			std::cout << "esperado: " << i << "\n";
 			falhas++;
 			break;
 		}
-		--ii;
+		procedimentos++;
+	}
+
+	ii.setNumber(range * -1);
+	for (ssize_t i = range * -1; i <= range;)
+	{
+		if (ii++ != i++)
+		{
+			std::cout << "resultado incorreto de " << i - 1 << "++ = " << ii.getString() << "\n";
+			std::cout << "esperado: " << i << "\n";
+			falhas++;
+			break;
+		}
+		procedimentos++;
+	}
+
+	ii.setNumber(range);
+	for (ssize_t i = range; i >= range * -1;)
+	{
+		if (ii-- != i--)
+		{
+			std::cout << "resultado incorreto de " << i + 1 << "-- = " << ii.getString() << "\n";
+			std::cout << "esperado: " << i << "\n";
+			falhas++;
+			break;
+		}
 		procedimentos++;
 	}
 
@@ -1192,7 +1087,6 @@ void big_verificationInRange(const ssize_t& range)
 		{
 			ii.setNumber(i);
 			jj.setNumber(j);
-
 			if ((i == j) != (ii == jj))
 			{
 				std::cout << "resultado incorreto de " << i << " == " << j << " = " << (ii == jj) << "\n";
@@ -1234,13 +1128,4 @@ void big_verificationInRange(const ssize_t& range)
 	}
 	std::cout << "TESTES REALIZADOS: " << procedimentos << "\n";
 	std::cout << "TESTES FALHOS: " << falhas << "\n";
-}
-
-size_t bigger(const ssize_t& num1, const ssize_t& num2)
-{
-	if(num1 >= num2)
-	{
-		return num1;
-	}
-	return num2;
 }

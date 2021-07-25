@@ -1,26 +1,19 @@
 #include <iostream>
 
-#include "bignum.h"
-#include "ptime.h"
+#include "bignum.hpp"
+#include "ptime.hpp"
 
 int main ()
 {
-	ptime<microseconds> time;
+	ptime<milliseconds> time;
 
-	bignum a(10000);
-	
-	std::cout << big_E(big_factorial(a), 10) << std::endl;
-
-
-	/*std::cout << "-----TESTE-----" << std::endl;
+	std::cout << "-----TESTE-----" << std::endl;
 
 	time.start();
-	big_verificationInRange(100);
-	time.point();
+	bignum::test(100);
 
-	std::cout << "TEMPO DE EXECUÇÃO: " << time.elapsed(1) << "ms" << std::endl;
+	std::cout << "TEMPO DE EXECUÇÃO: " << time.elapsed(time.point()) << "ms" << std::endl;
 	std::cout << "---------------" << std::endl;
-	*/
-	
+
 	return 0;
 }

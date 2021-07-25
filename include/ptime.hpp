@@ -1,4 +1,11 @@
 
+/*
+* Essa biblioteca não deve ser usada com fins lucrativos ou
+* comerciais.
+* Propriedade intelectual de Felipe Sena de Medeiros - IMD/UFRN
+* Última atualização: 25/03/2021
+*/
+
 #ifndef PTIME_H
 #define PTIME_H
 
@@ -127,7 +134,7 @@ public:
 	 */
 	double total()
 	{
-		return duration_cast<cast>(this->now() - this->points[0]).count();
+		return duration_cast<cast>(this->points[current_point] - this->points[0]).count();
 	}
 
 	time_point<high_resolution_clock> now()
