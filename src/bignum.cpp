@@ -1,5 +1,9 @@
 #include "bignum.hpp"
 
+#include <algorithm>
+#include <iostream>
+#include <string>
+
 bool bignum::getSignal() const
 {
 	return signal;
@@ -737,18 +741,14 @@ std::string bignum::complement(const std::string& num, const size_t& len)
 
 std::string bignum::invert(const std::string& _string)
 {
-	std::stringstream sstream;
-	short initial = 0;
-	if (_string[0] == '-')
+	std::string string(_string);
+	auto it = string.begin();
+	if (string[0] == '-')
 	{
-		initial = 1;
-		sstream << "-";
+		it++;
 	}
-	for (ssize_t i = _string.length() - 1; i >= initial; i--)
-	{
-		sstream << _string[i];
-	}
-	return sstream.str();
+	std::reverse(it, string.end());
+	return string;
 }
 
 std::string bignum::formatter(const std::string& _string)

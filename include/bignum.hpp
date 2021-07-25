@@ -27,6 +27,13 @@ private:
 	bool leq(const bignum&) const;
 	bool geq(const bignum&) const;
 
+	void plusplus();
+	void minusminus();
+
+	static std::string complement(const std::string& num, const size_t& len);
+	static std::string invert(const std::string&);
+	static std::string formatter(const std::string&);
+
 public:
 	bignum()
 	{
@@ -62,9 +69,6 @@ public:
 	const char& operator[](size_t) const;
 
 	void forceNumber(const std::string&);
-
-	void plusplus();
-	void minusminus();
 
 	template<typename t1, typename t2>
 	friend bignum operator+(const t1& num1, const t2& num2) { bignum num1_(num1), num2_(num2); return addition(num1_, num2_); }
@@ -134,10 +138,6 @@ public:
 	template<typename type>
 	bignum& operator%=(const type& num) { *this = *this % num; return *this; }
 
-	static std::string complement(const std::string& num, const size_t& len);
-	static std::string invert(const std::string&);
-	static std::string formatter(const std::string&);
-
 	static std::string superscript(const std::string&);
 	static std::string superscript(const ssize_t&);
 
@@ -148,8 +148,9 @@ public:
 	std::string E(const ssize_t&);
 
 	template<typename type>
-	bignum pow(const type& exp)
+	bignum pow(const type& _exp)
 	{
+		bignum exp(_exp);
 		if (exp < 0)
 		{
 			return 0;
