@@ -1,0 +1,9 @@
+.vscode
+objects
+
+prog
+
+*.exe
+*.zip
+*.rar
+*.ini
